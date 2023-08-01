@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/big_data?autoReconnect=true&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+cms:
+  id: 1d
+  configure:
+    problem-json: 'D:/Projects/dataprocess/src/main/resources/json/problem.json'
+    dict-json: 'D:/Projects/dataprocess/src/main/resources/json/dict.json'
+    event-json: '/data/dp/event.json'
+    event-child-json: '/data/dp/event-child.json'
