@@ -4,6 +4,11 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/big_data?autoReconnect=true&useUnicode=true&characterEncoding=utf8&allowMultiQueries=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+  task:
+    scheduling:
+      pool:
+        size: 30
+      thread-name-prefix: task-process
 cms:
   id: 1d
   configure:

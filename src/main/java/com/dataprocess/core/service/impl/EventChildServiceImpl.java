@@ -574,13 +574,11 @@ public class EventChildServiceImpl implements EventChildService {
                 String v = values.get(i);
                 if (c.equals("id")) {
                     if (i == values.size() - 1) {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("' ");
                     } else {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("', ");
                     }
@@ -722,13 +720,11 @@ public class EventChildServiceImpl implements EventChildService {
                 String v = values.get(i);
                 if (c.equals("id")) {
                     if (i == values.size() - 1) {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("' ");
                     } else {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("', ");
                     }
@@ -746,13 +742,11 @@ public class EventChildServiceImpl implements EventChildService {
                             v = "低";
                         }
                         if (i == values.size() - 1) {
-                            sb.append(c)
-                                    .append("='")
+                            sb.append("'")
                                     .append(v)
                                     .append("' ");
                         } else {
-                            sb.append(c)
-                                    .append("='")
+                            sb.append("'")
                                     .append(v)
                                     .append("', ");
                         }

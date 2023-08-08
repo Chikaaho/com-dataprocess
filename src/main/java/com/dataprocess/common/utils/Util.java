@@ -1,13 +1,18 @@
 package com.dataprocess.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.dataprocess.core.mapper.CronMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.stereotype.Repository;
 
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -26,8 +31,8 @@ public class Util {
             //路径
             ClassPathResource classPathResource = new ClassPathResource(fileName);
             //读取文件信息
-//            String str = IOUtils.toString(new InputStreamReader(classPathResource.getInputStream(),"UTF-8"));
-            String str = IOUtils.toString(new InputStreamReader(new FileInputStream(fileName)));
+            String str = IOUtils.toString(new InputStreamReader(classPathResource.getInputStream(),"UTF-8"));
+//            String str = IOUtils.toString(new InputStreamReader(new FileInputStream(fileName)));
             //转换为Map对象
             map = JSONObject.parseObject(str, LinkedHashMap.class);
         }

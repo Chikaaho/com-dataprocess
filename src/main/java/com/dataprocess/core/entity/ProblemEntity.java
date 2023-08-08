@@ -50,7 +50,6 @@ public class ProblemEntity {
     private String systemCode;
     private String emergentId;
     private String problemStatus;
-    private String pressureTaskCode;
     private String problemReviewerRid;
 
 }

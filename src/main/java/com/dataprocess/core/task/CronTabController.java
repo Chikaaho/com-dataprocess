@@ -1,10 +1,12 @@
 package com.dataprocess.core.task;
 
+import com.dataprocess.core.data.process.service.DataProcessService;
 import com.dataprocess.core.mapper.CronMapper;
 import com.dataprocess.core.service.EventChildService;
 import com.dataprocess.core.service.EventService;
 import com.dataprocess.core.service.ProblemService;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -24,27 +26,35 @@ import java.util.Date;
 @Component
 @EnableScheduling
 @Data
+@Slf4j
 public class CronTabController implements SchedulingConfigurer {
 
     private EventService eventService;
     private ProblemService problemService;
     private EventChildService eventChildService;
     private CronMapper cronMapper;
+    private DataProcessService dataProcessService;
     @Value("${cms.id}")
     private String ID;
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        taskRegistrar.addTriggerTask(this::processStart,
+        taskRegistrar.addTriggerTask(this::dpStart,
                 triggerContext -> {
                     String cron = cronMapper.getCron(ID);
                     return new CronTrigger(cron).nextExecutionTime(triggerContext);
                 });
     }
 
+    private void dpStart() {
+        dataProcessService.queryDetails();
+        log.info("成功执行一次数据调度");
+    }
+
     /*
     * 开启定时任务
     * */
+    @Deprecated
     private void processStart() {
         problemSyncStart();
         eventSyncStart();
@@ -63,6 +73,11 @@ public class CronTabController implements SchedulingConfigurer {
     private void eventSyncStart() {
         eventService.dataProcessing();
         eventChildService.dataProcessing();
+    }
+
+    @Autowired
+    public void setDataProcessService(DataProcessService dataProcessService) {
+        this.dataProcessService = dataProcessService;
     }
 
     @Autowired

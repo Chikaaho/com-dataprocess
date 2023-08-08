@@ -1,13 +1,20 @@
 package com;
 
-import com.dataprocess.core.entity.EventEntity;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.dataprocess.common.utils.Util;
+import com.dataprocess.core.data.process.config.HqlHandler;
+import com.dataprocess.core.service.impl.ProblemServiceImpl;
+import lombok.Data;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: hjx
@@ -18,9 +25,36 @@ import java.util.regex.Pattern;
 public class test {
 
     public static void main(String[] args) throws ParseException {
-        LocalDate d = LocalDate.parse("2023-04-04 12:12:12", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        LocalDate d1 = LocalDate.parse("2023-04-03", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        System.out.println(d1.isAfter(d));
+        String str = "null";
+        System.out.println(str.equals("null"));
     }
+
+    @Data
+    protected static class Dictionary {
+        private String data;
+        private List<DictData> dictData;
+
+        @Data
+        protected static class DictData {
+            private String target;
+            private List<Change> change;
+
+            @Data
+            protected static class Change {
+                private String column;
+                private List<Dict> dict;
+
+                @Data
+                protected static class Dict {
+                    private String key;
+                    private String val;
+                }
+
+            }
+
+        }
+
+    }
+
 
 }

@@ -305,13 +305,11 @@ public class ProblemServiceImpl implements ProblemService {
                 String v = values.get(i);
                 if (c.equals("problem_code")) {
                     if (i == values.size() - 1) {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("' ");
                     } else {
-                        sb.append(c)
-                                .append("='")
+                        sb.append("'")
                                 .append(v)
                                 .append("', ");
                     }
@@ -329,13 +327,11 @@ public class ProblemServiceImpl implements ProblemService {
                             v = "低";
                         }
                         if (i == values.size() - 1) {
-                            sb.append(c)
-                                    .append("='")
+                            sb.append("'")
                                     .append(v)
                                     .append("' ");
                         } else {
-                            sb.append(c)
-                                    .append("='")
+                            sb.append("'")
                                     .append(v)
                                     .append("', ");
                         }
