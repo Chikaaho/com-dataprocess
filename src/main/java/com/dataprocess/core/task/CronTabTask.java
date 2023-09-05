@@ -43,7 +43,7 @@ public class CronTabTask implements SchedulingConfigurer {
 
     private void dpStart() {
         dataProcessService.queryDetails();
-        log.info("'{}-'成功执行一次数据调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+        log.info("'{}'-成功执行一次数据调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
     }
 
     @Autowired

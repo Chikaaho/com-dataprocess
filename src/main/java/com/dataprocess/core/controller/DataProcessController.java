@@ -25,9 +25,10 @@ public class DataProcessController {
 
     @PostMapping("/dataProcess/start.php")
     public Result startProcessMiddleTable() {
+        log.info("'{}'-开始执行手工调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         try {
             dataProcessService.queryDetails();
-            log.info("'{}-'手工成功执行一次数据调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            log.info("'{}'-手工成功执行一次数据调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             return Result.success(ApiStatus.SUCCESS);
         } catch (Exception e) {
             log.error("手工执行调度失败,异常信息:{}",e.toString());
