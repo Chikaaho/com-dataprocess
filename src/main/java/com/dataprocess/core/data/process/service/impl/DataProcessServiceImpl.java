@@ -34,7 +34,7 @@ public class DataProcessServiceImpl implements DataProcessService {
     * 主业务入口，获取源和目标数据做增量更新
     * */
     @Override
-    public void queryDetails() {
+    public synchronized void queryDetails() {
         // 获取表映射
         List<Map<String, Object>> tableQueryList = mapper.getDetails(CONFIG_SEARCH);
         //遍历表映射

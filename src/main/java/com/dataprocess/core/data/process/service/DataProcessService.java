@@ -9,6 +9,7 @@ import java.util.Map;
  * @Version: 1.0
  * @Description:
  */
+
 public interface DataProcessService {
 
     void queryDetails();
