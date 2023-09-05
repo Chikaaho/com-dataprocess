@@ -17,13 +17,13 @@ import java.util.Date;
  * @Version: 1.0
  * @Description: 手动执行调度任务
  */
-@RestController("/dataProcess")
+@RestController
 @Slf4j
 public class DataProcessController {
 
     private DataProcessService dataProcessService;
 
-    @PostMapping("/start.asp")
+    @PostMapping("/dataProcess/start.php")
     public Result startProcessMiddleTable() {
         try {
             dataProcessService.queryDetails();
