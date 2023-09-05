@@ -1,10 +1,7 @@
 package com.dataprocess.core.task;
 
 import com.dataprocess.core.data.process.service.DataProcessService;
-import com.dataprocess.core.mapper.CronMapper;
-import com.dataprocess.core.service.EventChildService;
-import com.dataprocess.core.service.EventService;
-import com.dataprocess.core.service.ProblemService;
+import com.dataprocess.core.data.process.mapper.CronMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +12,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Component;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -27,11 +25,8 @@ import java.util.Date;
 @EnableScheduling
 @Data
 @Slf4j
-public class CronTabController implements SchedulingConfigurer {
+public class CronTabTask implements SchedulingConfigurer {
 
-    private EventService eventService;
-    private ProblemService problemService;
-    private EventChildService eventChildService;
     private CronMapper cronMapper;
     private DataProcessService dataProcessService;
     @Value("${cms.id}")
@@ -48,51 +43,12 @@ public class CronTabController implements SchedulingConfigurer {
 
     private void dpStart() {
         dataProcessService.queryDetails();
-        log.info("成功执行一次数据调度");
-    }
-
-    /*
-    * 开启定时任务
-    * */
-    @Deprecated
-    private void processStart() {
-        problemSyncStart();
-        eventSyncStart();
-    }
-
-    /*
-    * 执行定时任务同步问题
-    * */
-    private void problemSyncStart() {
-        problemService.dataProcessing();
-    }
-
-    /*
-     * 执行定时任务同步事件
-     * */
-    private void eventSyncStart() {
-        eventService.dataProcessing();
-        eventChildService.dataProcessing();
+        log.info("'{}-'成功执行一次数据调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
     }
 
     @Autowired
     public void setDataProcessService(DataProcessService dataProcessService) {
         this.dataProcessService = dataProcessService;
-    }
-
-    @Autowired
-    public void setEventService(EventService eventService) {
-        this.eventService = eventService;
-    }
-
-    @Autowired
-    public void setProblemService(ProblemService problemService) {
-        this.problemService = problemService;
-    }
-
-    @Autowired
-    public void setEventChildService(EventChildService eventChildService) {
-        this.eventChildService = eventChildService;
     }
 
     @Autowired

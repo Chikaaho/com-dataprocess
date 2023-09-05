@@ -1,5 +1,7 @@
 package com.dataprocess.core.data.process.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.dataprocess.common.utils.Util;
 import com.dataprocess.core.data.process.config.HqlHandler;
 import com.dataprocess.core.data.process.mapper.DataProcessMapper;
 import com.dataprocess.core.data.process.service.DataProcessService;
@@ -25,12 +27,17 @@ public class DataProcessServiceImpl implements DataProcessService {
 
     private DataProcessMapper mapper;
 
+    //配置查询,取出去重后的来源和目标表名
     private static final String CONFIG_SEARCH = "select distinct source_table_name_, target_table_name_ from sys_config_map;";
 
+    /*
+    * 主业务入口，获取源和目标数据做增量更新
+    * */
     @Override
     public void queryDetails() {
-        // 获取字段映射
+        // 获取表映射
         List<Map<String, Object>> tableQueryList = mapper.getDetails(CONFIG_SEARCH);
+        //遍历表映射
         tableQueryList.forEach(tableMap -> {
             // 获取来源和目标表名
             String sourceTableValue = tableMap.get("source_table_name_").toString();
@@ -43,6 +50,7 @@ public class DataProcessServiceImpl implements DataProcessService {
                     + sourceTableValue
                     + "' and target_table_name_='"
                     + targetTableValue + "'");
+            // 获取到一个表调度的来源\目标表名及字段
             List<Map<String, Object>> configMaps = mapper.getDetails(configHql.getHql());
             HqlHandler targetHql = HqlHandler.selectGenerate();
             targetHql.setTable(targetTableValue);
@@ -53,37 +61,30 @@ public class DataProcessServiceImpl implements DataProcessService {
             // 获取目标表和源表数据
             List<Map<String, Object>> targetDataList = mapper.getDetails(targetHql.getHql());
             List<Map<String, Object>> sourceDataList = mapper.getDetails(sourceHql.getHql());
-            // 字段和值中间变量
-            List<String> columns = new ArrayList<>();
-            List<String> values = new ArrayList<>();
             // 遍历来源数据
             sourceDataList.forEach(dataList -> {
+                // 字段和值中间变量
+                List<String> columns = new ArrayList<>();
+                List<String> values = new ArrayList<>();
                 // 遍历字段映射
                 for (Map<String, Object> config : configMaps) {
                     String targetColumn = config.get("target_column_").toString();
                     String sourceColumn = config.get("source_column_").toString();
                     String midVal;
-                    String createTime = dataList.get("CREATE_TIME_").toString();
-                    // 如果值为null,toString会报空指针异常
-                    try {
-                        midVal = dataList.getOrDefault(sourceColumn, "null").toString();
-                    } catch (NullPointerException e) {
-                        midVal = "null";
-                    }
-                    // 更新val值,替换键值或人员部门
-                    midVal = checkDict(targetColumn, midVal, targetTableValue, createTime.replace("T", " "));
-                    /*if (targetTableValue.equals("event_task_middle_table")) {
+                    String createTime = dataList.getOrDefault("CREATE_TIME_", "2023").toString();
+                    // 如果取出来的字段是url,拼id
+                    if (Util.isUrl(sourceColumn)) {
+                        midVal = sourceColumn + dataList.get("ID_");
+                    } else {
+                        // 如果值为null,toString会报空指针异常
                         try {
-                            if (dataList.get("field00000113").toString().equals("2022102500055") && sourceColumn.equals("field00000248")) {
-                                System.out.println(dataList.get("field00000076"));
-                                System.out.println(midVal);
-                                System.out.println(midVal.equals("null"));
-                                System.exit(1);
-                            }
-                        }catch (Exception e) {
-                            System.out.print("");
+                            midVal = dataList.getOrDefault(sourceColumn, "null").toString();
+                        } catch (NullPointerException e) {
+                            midVal = "null";
                         }
-                    }*/
+                    }
+                    // 更新val值,替换键值、人员部门、url，去除mybatis查询日期时间中的'T'
+                    midVal = checkDict(targetColumn, midVal, targetTableValue, createTime.replace("T", " "));
                     if (columns.contains(targetColumn)) {
                         if (!midVal.equals("null")) {
                             values.set(columns.indexOf(targetColumn), midVal.replace("'", "\\'"));
@@ -91,17 +92,22 @@ public class DataProcessServiceImpl implements DataProcessService {
                     } else {
                         columns.add(targetColumn);
                         midVal = midVal.replace("'", "\\'");
+                        if (StringUtils.isEmpty(midVal)) {
+                            midVal = "null";
+                        }
                         values.add(midVal);
                     }
                 }
                 boolean hasData = false;
                 for (Map<String, Object> map : targetDataList) {
-                    if (!ObjectUtils.isEmpty(map.get("ID_"))) {
+                    String sourceId = dataList.get("ID_").toString();
+                    String targetId = map.get("id_").toString();
+                    if (sourceId.equals(targetId)) {
                         hasData = true;
                         break;
                     }
                 }
-                if (targetDataList.isEmpty() || hasData) {
+                if (!hasData) {
                     HqlHandler insertHql = HqlHandler.insertGenerate();
                     insertHql.setTable(targetTableValue);
                     insertHql.setColumns(String.join(",", columns));
@@ -110,7 +116,7 @@ public class DataProcessServiceImpl implements DataProcessService {
                         mapper.insertDetails(insertHql.getHql());
                         //log.info("执行插入操作{}",insertHql);
                     } catch (Exception e) {
-                        log.error("数据插入失败,请人工干预{}",insertHql);
+                        log.error("数据插入失败,请人工干预{}", insertHql);
                     }
                 } else {
                     HqlHandler updateHql = HqlHandler.updateGenerate();
@@ -121,7 +127,7 @@ public class DataProcessServiceImpl implements DataProcessService {
                         mapper.updateDetails(updateHql.getHql());
                         //log.info("执行更新操作{}",updateHql);
                     } catch (Exception e) {
-                        log.error("数据更新失败,请人工干预{}",updateHql);
+                        log.error("数据更新失败,请人工干预{}", updateHql);
                     }
                 }
             });
@@ -201,6 +207,7 @@ public class DataProcessServiceImpl implements DataProcessService {
         if (val.equals("null")) {
             return val;
         }
+        // 开发约束，字段中包含'rid'时需要将用户登录名替换为人员中文名称，包含'raid'时需替换部门id为部门名称
         if (key.contains("rid") || key.contains("raid")) {
             return getUserOrDept(key, val);
         }
@@ -208,6 +215,7 @@ public class DataProcessServiceImpl implements DataProcessService {
             return val.replace("T", " ");
         }
         StringBuilder sb = new StringBuilder();
+        //查询字典映射
         HqlHandler hql = HqlHandler.selectGenerate();
         hql.setTable("sys_config_dict_map");
         hql.setCondition("target_table_name_='" + tableName + "' and target_column_='" + key + "'");
@@ -216,6 +224,7 @@ public class DataProcessServiceImpl implements DataProcessService {
         if (details.isEmpty()) {
             return val;
         }
+        //对于两个特殊值做单独处理
         if (key.equals("problem_priority") || key.equals("event_task_level")) {
             LocalDate flagDate = LocalDate.parse(
                     "2023-04-04", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
@@ -241,6 +250,9 @@ public class DataProcessServiceImpl implements DataProcessService {
         return sb.toString();
     }
 
+    /*
+    * 将字段和值临时列表转换为更新结果
+    * */
     private String updateChanges(List<String> columns, List<String> values) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < columns.size(); i++) {

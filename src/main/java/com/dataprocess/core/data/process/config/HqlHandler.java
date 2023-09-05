@@ -21,6 +21,9 @@ public class HqlHandler {
 
     private String hql;
 
+    /*
+    * 更新默认查询sql语句
+    * */
     public String checkQueryHql() {
         String hqlImpl = this.getHql();
         if (hqlImpl.contains("{columns}")) {

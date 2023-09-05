@@ -7,6 +7,7 @@ import com.dataprocess.core.data.process.config.HqlHandler;
 import com.dataprocess.core.service.impl.ProblemServiceImpl;
 import lombok.Data;
 
+import java.net.URL;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,8 +26,13 @@ import java.util.stream.Collectors;
 public class test {
 
     public static void main(String[] args) throws ParseException {
-        String str = "null";
-        System.out.println(str.equals("null"));
+        String uri = "http://127.0.0.1?businessId=";
+        try {
+            new URL(uri);
+            System.out.println(true);
+        } catch (Exception e) {
+            System.out.println(false);
+        }
     }
 
     @Data

@@ -11,8 +11,3 @@ spring:
       thread-name-prefix: task-process
 cms:
   id: 1d
-  configure:
-    problem-json: 'D:/Projects/cmsproject/dataprocess/src/main/resources/json/problem.json'
-    dict-json: 'D:/Projects/cmsproject/dataprocess/src/main/resources/json/dict.json'
-    event-json: 'D:/Projects/cmsproject/dataprocess/src/main/resources/json/event.json'
-    event-child-json: 'D:/Projects/cmsproject/dataprocess/src/main/resources/json/event-child.json'

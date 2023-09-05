@@ -1,4 +1,4 @@
-package com.dataprocess.core.mapper;
+package com.dataprocess.core.data.process.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

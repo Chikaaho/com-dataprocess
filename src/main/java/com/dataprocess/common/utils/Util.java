@@ -1,20 +1,14 @@
 package com.dataprocess.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.dataprocess.core.mapper.CronMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Repository;
 
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.net.URL;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * @Author: hjx
@@ -51,6 +45,15 @@ public class Util {
             return "select dept_name from sys_dept where dept_id='" + val + "'";
         } else {
             return val;
+        }
+    }
+
+    public static boolean isUrl(String url) {
+        try {
+            new URL(url);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 
