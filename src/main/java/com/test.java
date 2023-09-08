@@ -1,21 +1,13 @@
 package com;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.dataprocess.common.utils.Util;
-import com.dataprocess.core.data.process.config.HqlHandler;
-import com.dataprocess.core.service.impl.ProblemServiceImpl;
+
 import lombok.Data;
 
 import java.net.URL;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
+import java.util.*;
+
 
 /**
  * @Author: hjx
@@ -26,13 +18,17 @@ import java.util.stream.Collectors;
 public class test {
 
     public static void main(String[] args) throws ParseException {
-        String uri = "http://127.0.0.1?businessId=";
-        try {
-            new URL(uri);
-            System.out.println(true);
-        } catch (Exception e) {
-            System.out.println(false);
+        System.out.println(0x1a6f);
+    }
+
+    public static Map<String, Object> getStr(String... str) {
+        Map<String, Object> map = new HashMap<>();
+        if (str.length < 2) {
+            map.put("load", str[0]);
+        } else {
+            map.put("load", Arrays.toString(str));
         }
+        return map;
     }
 
     @Data

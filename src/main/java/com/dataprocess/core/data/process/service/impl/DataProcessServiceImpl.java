@@ -134,6 +134,9 @@ public class DataProcessServiceImpl implements DataProcessService {
         });
     }
 
+    /*
+    * 更新用户部门数据
+    * */
     private String getUserOrDept(String key, String val) {
         String userStr = "rid";
         String deptStr = "raid";
@@ -203,6 +206,9 @@ public class DataProcessServiceImpl implements DataProcessService {
         }
     }
 
+    /*
+    * 更新字典数据
+    * */
     private String checkDict(String key, String val, String tableName, String createTime) {
         if (val.equals("null")) {
             return val;
