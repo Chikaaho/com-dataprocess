@@ -23,7 +23,7 @@ public class DataProcessController {
 
     private DataProcessService dataProcessService;
 
-    @PostMapping("/dataProcess/start.php")
+    @PostMapping({"/dataProcess/start.php", "/start.php", "/data/start.php"})
     public Result startProcessMiddleTable() {
         log.info("'{}'-开始执行手工调度", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
         try {
